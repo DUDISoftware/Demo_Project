@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { loginUser } from "../../src/services/api";
+import React, { useState, useContext, useEffect } from "react";
+import { loginUser, googleLogin } from "../../src/services/api";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../src/context/AuthContext";
 import MonQuaNhoImg from "../../src/assets/login.png";
@@ -23,6 +23,40 @@ const Login = () => {
       alert(error.response?.data?.message || "Lỗi khi đăng nhập");
     }
   };
+
+  const handleGoogleSuccess = async (response) => {
+    const tokenId = response.credential;
+
+    try {
+      const res = await googleLogin({ tokenId });
+      const { token, user } = res.data;
+      login(user, token);
+      alert("Đăng nhập Google thành công!");
+      navigate("/");
+    } catch (err) {
+      console.error("Google login failed", err);
+      alert("Đăng nhập Google thất bại");
+    }
+  };
+
+  useEffect(() => {
+    /* global google */
+    if (window.google) {
+      google.accounts.id.initialize({
+        client_id: "361721547134-lmbqo33mu5gbceqr8udae0vgc9id0r2m.apps.googleusercontent.com",
+        callback: handleGoogleSuccess,
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById("googleBtn"),
+        {
+          theme: "outline",
+          size: "large",
+          width: "100%",
+        }
+      );
+    }
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F6F6F6]">
@@ -61,7 +95,8 @@ const Login = () => {
                 <span className="px-3 text-gray-400 text-sm font-medium">HOẶC</span>
                 <div className="flex-1 h-px bg-gray-300"></div>
               </div>
-              {/* Nút Google / Facebook nếu có */}
+              {/* Nút Google */}
+              <div id="googleBtn" className="w-full flex justify-center" />
             </form>
             <div className="text-center text-sm mt-4">
               Chưa có tài khoản?{" "}
