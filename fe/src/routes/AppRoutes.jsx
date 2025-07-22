@@ -8,6 +8,7 @@ import Login from "../../views/auth/Login";
 import Register from "../../views/auth/Register";
 import HomePage from "../../views/user/Home/HomePage";
 import PrivateRoute from "./PrivateRoute";
+import ProductPage from "../../views/user/Product/ProductPage";
 
 export default function AppRoutes() {
   return (
@@ -29,6 +30,7 @@ export default function AppRoutes() {
             </PrivateRoute>
           }
         />
+        <Route path="/products" element={<ProductPage />} />
       </Route>
 
       {/* Admin pages (protected layout) */}
