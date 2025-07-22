@@ -1,8 +1,8 @@
-const adminMiddleware = (req, res, next) => {
+const isAdmin = (req, res, next) => {
   if (req.user.role !== "admin") {
-    return res.status(403).json({ error: "Bạn không có quyền truy cập tài nguyên này" });
+    return res.status(403).json({ message: "Chỉ admin được phép truy cập" });
   }
   next();
 };
 
-module.exports = adminMiddleware;
+module.exports = { isAdmin };
